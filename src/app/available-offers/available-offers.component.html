@@ -1,0 +1,190 @@
+<div class="container ctForm spacer" *ngIf="mode==0">
+
+  <div>
+    <p><img src="../../assets/img/airfrance.png" alt="air france" id="logo" /></p>
+  </div>
+
+  <form #f="ngForm" (ngSubmit)="sendOffer(f.value)">
+    <div class="form-check-inline">
+      <input class="form-check-input" type="radio" name="cabinClass" id="cabinClass1" #cabinClass="ngModel" ngModel value="ECONOMY" required />
+      <label class="form-check-label" for="cabinClass1">
+        ECONOMY
+      </label>
+    </div>
+    <div class="form-check-inline">
+      <input class="form-check-input" type="radio" name="cabinClass" id="cabinClass2" #cabinClass="ngModel" ngModel value="BUSINESS" required />
+      <label class="form-check-label" for="cabinClass2">
+        BUSINESS
+      </label>
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(cabinClass.touched && cabinClass.errors)">
+      <div *ngIf="cabinClass.errors?.required">
+        La classe est obligatoire
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="youngAdult">Nombre de jeunes adultes entre 12-15 ans.</label>
+      <input type="number" class="form-control" id="youngAdult" name="youngAdult" ngModel #YOUNG_ADULT="ngModel" placeholder="Nombre de jeunes adultes"  min="0" required />
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(YOUNG_ADULT.touched && YOUNG_ADULT.errors)">
+      <div *ngIf="YOUNG_ADULT.errors?.required">
+        Le nombre de jeunes adultes est obligatoire
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="infant">Nombre de bébés Sous 2 ans</label>
+      <input type="number" class="form-control" id="infant" placeholder="Nombre de bébés" ngModel #INFANT="ngModel" name="infant" min="0" required />
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(INFANT.touched && INFANT.errors)">
+      <div *ngIf="INFANT.errors?.required">
+        Le nombre de bébés est obligatoire
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="child">Nombre d'enfant(s) De 2-11 ans.</label>
+      <input type="number" class="form-control" id="child" placeholder="Nombre d'enfant(s)" name="child" ngModel #CHILD="ngModel" min="0" required />
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(CHILD.touched && CHILD.errors)">
+      <div *ngIf="CHILD.errors?.required">
+        Le nombre d'enfants est obligatoire
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="adult">Nombre d'adultes De 16 ans et plus.</label>
+      <input type="number" class="form-control" id="adult" placeholder="Nombre d'adultes" name="adult" min="0" ngModel #ADULT="ngModel" required />
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(ADULT.touched && ADULT.errors)">
+      <div *ngIf="ADULT.errors?.required">
+        Le nombre d'adultes est obligatoire
+      </div>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="example-full-width">
+        <mat-select placeholder="Devise" name="currency" ngModel #currency="ngModel" required>
+          <mat-option *ngFor="let devise of devises" [value]="devise.value">
+            {{ devise.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(currency.touched && currency.errors)">
+      <div *ngIf="currency.errors?.required">
+        La devise est obligatoire
+      </div>
+    </div>
+
+    <mat-form-field class="example-full-width">
+      <input type="text" placeholder="En départ de" aria-label="Number" matInput name="depart" [matAutocomplete]="auto1" [(ngModel)]="originAeroport" #origin="ngModel" (ngModelChange)="originStates = this.filterOptionOrigin(originAeroport)" minlength="3" maxlength="100" required />
+      <mat-autocomplete #auto1="matAutocomplete">
+        <mat-option *ngFor="let option1 of originStates" [value]="option1">
+          {{ option1 }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(origin.touched && origin.errors)">
+      <div *ngIf="origin.errors?.required">
+        L'origine du départ est obligatoire
+      </div>
+      <div *ngIf="origin.errors?.minlength || origin.errors?.maxlength">
+        L'origine du départ doit etre entre 5 et 50 caractères
+      </div>
+    </div>
+
+    <mat-form-field class="example-full-width">
+      <input type="text" placeholder="En destination de" aria-label="Number" matInput name="destination" [matAutocomplete]="auto2" [(ngModel)]="destinationAeroport" #destination="ngModel" (ngModelChange)="destinationStates = this.filterOptionDestination(destinationAeroport)" minlength="3" maxlength="100" required />
+      <mat-autocomplete #auto2="matAutocomplete">
+        <mat-option *ngFor="let option2 of destinationStates" [value]="option2">
+          {{ option2 }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(destination.touched && destination.errors)">
+      <div *ngIf="destination.errors?.required">
+        La destination est obligatoire
+      </div>
+      <div *ngIf="destination.errors?.minlength || origin.errors?.maxlength">
+        La destination doit etre entre 5 et 50 caractères
+      </div>
+    </div>
+
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="filterDatePast" name="dateDepart" placeholder="Choisir une date" ngModel #dateDepart="ngModel" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(dateDepart.touched && dateDepart.errors)">
+      <div *ngIf="dateDepart.errors?.required">
+        La date est obligatoire
+      </div>
+    </div>
+
+    <p>
+      <button type="submit" class="btn btn-primary" [disabled]="!f.form.valid" name="valid">Valider</button>
+    </p>
+  </form>
+</div>
+
+<div class="container ctForm spacer" *ngIf="mode==1">
+  <h2 align="center">Liste des vols</h2>
+
+  <div class="container">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Durée</th>
+        <th scope="col">Nb places restantes</th>
+        <th scope="col">Date de départ</th>
+        <th scope="col">Date d'arrivée</th>
+        <th scope="col">Avion</th>
+        <th scope="col">Prix</th>
+        <th scope="col">Prix total</th>
+        <th scope="col">Type passager</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let filteredOffer of filteredOffers">
+      <tr *ngFor="let connection of filteredOffer.connections">
+        <td> {{connection.duration}}</td>
+        <td align="center">{{connection.numberOfSeatsAvailable}}</td>
+        <td><div *ngFor="let segment of connection.segments">{{segment.departureDateTime | date: 'dd/MM/yyyy hh:mm a'}}</div></td>
+        <td><div *ngFor="let segment of connection.segments">{{segment.arrivalDateTime | date: 'dd/MM/yyyy hh:mm a'}}</div></td>
+        <td><div *ngFor="let segment of connection.segments">{{segment.marketingFlight.operatingFlight.equipmentType.name}}</div></td>
+        <td>{{filteredOffer.price.displayPrice}} {{filteredOffer.price.currency}}</td>
+        <td>{{filteredOffer.price.totalPrice}} {{filteredOffer.price.currency}}</td>
+        <td><div *ngFor="let passenger of filteredOffer.passengers" align="center">{{passenger.type}}</div></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li [ngClass]="{'page-item active':i==currentPage}" *ngFor="let p of pages; let i = index">
+          <a class="page-link"(click)="gotoPage(i + 1)">{{i+1}}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <button class="btn btn-primary" (click)="mode=0">Nouvelle Destination</button>
+</div>
+
+<div class="container ctForm spacer" *ngIf="mode==2">
+  <span>Aucun vol pour ce Pays</span>
+  <button class="btn btn-primary" (click)="mode=0">Nouvelle Destination</button>
+</div>
+
+
